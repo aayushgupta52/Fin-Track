@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/.env
+**/.env.*
+**/npm-debug.log*
+**/.git
+**/.gitignore
+**/*.md
+**/uploads
+**/auth_info_baileys
+**/prisma/dev.db
+**/.vscode
+**/.claude

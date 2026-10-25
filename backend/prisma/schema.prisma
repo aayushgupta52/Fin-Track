@@ -1,0 +1,251 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// PostgreSQL is used for local development and production (Neon is supported).
+// Both DATABASE_URL (pooled) and DIRECT_URL (direct connection) are required.
+datasource db {
+  provider  = "postgresql"
+  // Pooled connection string used by the app at runtime (e.g. Neon/PgBouncer).
+  url       = env("DATABASE_URL")
+  // Direct (non-pooled) connection used only for migrations/introspection.
+  // Set DIRECT_URL in every environment; if you have no separate pooled URL,
+  // just set it equal to DATABASE_URL.
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  passwordHash  String?
+  googleId      String?  @unique
+  avatarUrl     String?
+  phone         String?
+  panNumber     String? // Sensitive tax ID; keep unused until field-level encryption is implemented
+  financialYear String   @default("2024-25")
+  taxRegime     String   @default("new") // "old" | "new"
+  annualIncome  Float?
+  monthlyIncome Float? // primary metric — app is gated until this is set
+  role          String   @default("user") // "user" | "admin"
+  isPro         Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  expenses      Expense[]
+  incomes       Income[]
+  subscriptions Subscription[]
+  budgets       Budget[]
+  documents     Document[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  splitGroups   SplitGroup[]
+}
+
+model Expense {
+  id              String   @id @default(cuid())
+  userId          String
+  amount          Float
+  currency        String   @default("INR")
+  category        String // ENUM: Food, Transport, EMI, etc.
+  subcategory     String?
+  description     String?
+  merchant        String?
+  date            DateTime
+  paymentMethod   String? // UPI, Card, Cash, Net Banking
+  upiId           String?
+  isRecurring     Boolean  @default(false)
+  isTaxDeductible Boolean  @default(false)
+  taxSection      String? // "80C", "80D", "HRA", etc.
+  receiptUrl      String?
+  source          String   @default("manual") // "manual" | "ocr" | "pdf" | "sms"
+  aiConfidence    Float? // 0-1 confidence score from AI categorization
+  tags            String[] @default([])
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId, category])
+}
+
+model Income {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Float
+  source      String // Salary, Freelance, Business, Investment, Rental
+  description String?
+  date        DateTime
+  isTaxable   Boolean  @default(true)
+  tdsDeducted Float?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model Subscription {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String // Netflix, Swiggy One, etc.
+  amount          Float
+  billingCycle    String // "monthly" | "yearly" | "quarterly"
+  nextBillingDate DateTime
+  category        String
+  isActive        Boolean  @default(true)
+  reminderDays    Int      @default(3)
+  logoUrl         String?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Budget {
+  id             String   @id @default(cuid())
+  userId         String
+  category       String
+  limitAmount    Float
+  period         String // "monthly" | "weekly"
+  alertThreshold Float    @default(0.8) // Alert at 80% usage
+  month          Int
+  year           Int
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, year, month])
+}
+
+model Document {
+  id                String    @id @default(cuid())
+  userId            String
+  fileUrl           String
+  fileType          String // "pdf" | "image" | "receipt"
+  fileName          String
+  status            String    @default("pending") // pending | processing | done | needs_review | failed
+  processingError   String?  // Actionable processing diagnostic; never contains credentials
+  extractedText     String?
+  transactionsFound Int       @default(0)
+  processedAt       DateTime?
+  createdAt         DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String // "budget_alert" | "subscription" | "report" | "tax"
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ── Split Expenses (Splitwise-style) ──────────────────────────────────────
+// A group is owned/managed by one FinTrack user. Members are named participants
+// (roommates, trip friends) — they don't need their own login. Balances and the
+// minimal "who owes whom" settlement plan are computed on the fly by the service.
+
+model SplitGroup {
+  id        String   @id @default(cuid())
+  ownerId   String
+  name      String
+  emoji     String   @default("👥")
+  createdAt DateTime @default(now())
+
+  owner       User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members     SplitMember[]
+  expenses    SplitExpense[]
+  settlements Settlement[]
+
+  @@index([ownerId])
+}
+
+model SplitMember {
+  id        String   @id @default(cuid())
+  groupId   String
+  name      String
+  email     String?
+  isYou     Boolean  @default(false) // the owner's own participant row
+  createdAt DateTime @default(now())
+
+  group           SplitGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  shares          SplitShare[]
+  expensesPaid    SplitExpense[] @relation("PaidBy")
+  settlementsFrom Settlement[]   @relation("SettleFrom")
+  settlementsTo   Settlement[]   @relation("SettleTo")
+
+  @@index([groupId])
+}
+
+model SplitExpense {
+  id          String   @id @default(cuid())
+  groupId     String
+  paidById    String
+  description String
+  amount      Float
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  group  SplitGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  paidBy SplitMember  @relation("PaidBy", fields: [paidById], references: [id])
+  shares SplitShare[]
+
+  @@index([groupId])
+}
+
+model SplitShare {
+  id        String @id @default(cuid())
+  expenseId String
+  memberId  String
+  amount    Float // this member's portion of the expense
+
+  expense SplitExpense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  member  SplitMember  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([expenseId])
+  @@index([memberId])
+}
+
+model Settlement {
+  id        String   @id @default(cuid())
+  groupId   String
+  fromId    String // member who paid
+  toId      String // member who received
+  amount    Float
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  group SplitGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  from  SplitMember @relation("SettleFrom", fields: [fromId], references: [id])
+  to    SplitMember @relation("SettleTo", fields: [toId], references: [id])
+
+  @@index([groupId])
+}
