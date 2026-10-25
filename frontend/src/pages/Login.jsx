@@ -51,19 +51,19 @@ export default function Login() {
   ];
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
-      <div className="pointer-events-none absolute -left-40 -top-40 h-96 w-96 rounded-full bg-emerald-400/[0.07] blur-3xl" />
+    <main className="relative min-h-screen overflow-hidden bg-[#090D12] text-[#F1F5F9]">
+      <div className="pointer-events-none absolute -left-40 -top-40 h-96 w-96 rounded-full bg-emerald-500/[0.025] blur-3xl" />
 
-      <div className="pointer-events-none absolute -bottom-40 left-1/3 h-96 w-96 rounded-full bg-cyan-400/[0.05] blur-3xl" />
+      
 
       <div className="relative mx-auto grid min-h-screen max-w-7xl grid-cols-1 lg:grid-cols-2">
         {/* LEFT SIDE: BRANDING */}
         <section className="flex flex-col justify-center px-6 py-10 sm:px-12 lg:px-16 lg:py-14">
           <Link
             to="/login"
-            className="mb-10 inline-flex w-fit items-center gap-3 sm:mb-12"
+            className="mb-8 inline-flex w-fit items-center gap-3 sm:mb-10"
           >
-            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-emerald-200/20 bg-gradient-to-br from-emerald-300 to-teal-400 text-xl font-black text-[#04110D] shadow-[0_4px_20px_rgba(52,211,153,0.15)]">
+            <span className="grid h-11 w-11 place-items-center rounded-xl border border-emerald-300/15 bg-[#1D8B68] text-xl font-bold text-white">
               F
             </span>
 
@@ -79,30 +79,30 @@ export default function Login() {
           </Link>
 
           <div className="max-w-xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-3 py-1.5 text-xs font-medium tracking-wide text-emerald-300">
+            <div className="mb-5 inline-flex items-center gap-2 border-l-2 border-emerald-600 pl-3 py-1 text-xs font-semibold tracking-[0.12em] text-emerald-400">
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
               YOUR MONEY, MADE CLEAR
             </div>
 
-            <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl xl:text-6xl">
+            <h1 className="text-4xl font-semibold leading-[1.12] tracking-[-0.035em] sm:text-[2.75rem] xl:text-5xl">
               Make smarter
               <br />
               decisions with
               <br />
 
-              <span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
+              <span className="text-emerald-400">
                 your money.
               </span>
             </h1>
 
-            <p className="mt-6 max-w-md text-base leading-7 text-slate-400 sm:text-lg">
+            <p className="mt-5 max-w-md text-base leading-7 text-slate-400">
               Understand your spending, plan your budget, and build
               healthier financial habits with FinTrack.
             </p>
           </div>
 
           {/* DEMO PREVIEW */}
-          <div className="mt-9 max-w-lg rounded-3xl border border-[#252B38] bg-[#0D111B]/95 p-5 shadow-2xl shadow-black/40 backdrop-blur-xl sm:mt-10 sm:p-6">
+          <div className="mt-8 max-w-lg rounded-2xl border border-[#26303B] bg-[#101720] p-5 sm:mt-8 sm:p-6">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-slate-200">
@@ -114,7 +114,7 @@ export default function Login() {
                 </p>
               </div>
 
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+              <div className="grid h-10 w-10 place-items-center rounded-lg bg-[#192A29] text-emerald-400">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -130,7 +130,7 @@ export default function Login() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-[#252B38] bg-[#111827] p-4">
+              <div className="rounded-xl border border-[#293340] bg-[#141C26] p-4">
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                   <span className="h-2 w-2 rounded-full bg-emerald-400" />
                   Income tracking
@@ -145,7 +145,7 @@ export default function Login() {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-[#252B38] bg-[#111827] p-4">
+              <div className="rounded-xl border border-[#293340] bg-[#141C26] p-4">
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                   <span className="h-2 w-2 rounded-full bg-cyan-400" />
                   Expense tracking
@@ -162,7 +162,7 @@ export default function Login() {
             </div>
 
             {/* DECORATIVE CHART */}
-            <div className="mt-4 rounded-2xl border border-[#252B38] bg-[#0A0E17] p-4">
+            <div className="mt-4 rounded-xl border border-[#293340] bg-[#0D131B] p-4">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-xs font-medium text-slate-300">
                   Financial habits
@@ -180,7 +180,7 @@ export default function Login() {
                 {chartHeights.map((height, index) => (
                   <div
                     key={index}
-                    className="flex-1 rounded-t-md bg-gradient-to-t from-emerald-600/40 to-emerald-300/90"
+                    className="flex-1 rounded-t-sm bg-emerald-600/70"
                     style={{ height: `${height}%` }}
                   />
                 ))}
@@ -200,10 +200,10 @@ export default function Login() {
         </section>
 
         {/* RIGHT SIDE: LOGIN */}
-        <section className="flex items-center justify-center px-5 py-10 sm:px-10 lg:px-12">
-          <div className="w-full max-w-md rounded-3xl border border-white/[0.09] bg-[#0B0F17] p-7 shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:p-9">
+        <section className="flex items-center justify-center px-5 py-10 sm:px-10 lg:px-12 lg:pl-8">
+          <div className="w-full max-w-md rounded-2xl border border-[#293340] bg-[#10161F] p-7 shadow-[0_12px_36px_rgba(0,0,0,0.18)] sm:p-8">
             <div className="mb-8">
-              <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
+              <div className="mb-5 grid h-11 w-11 place-items-center rounded-xl border border-[#2D5148] bg-[#172923] text-emerald-400">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -218,7 +218,7 @@ export default function Login() {
                 </svg>
               </div>
 
-              <h2 className="text-3xl font-bold tracking-tight text-white">
+              <h2 className="text-2xl font-semibold tracking-tight text-white">
                 Welcome back
               </h2>
 
@@ -245,7 +245,7 @@ export default function Login() {
                       email: event.target.value,
                     })
                   }
-                  className="w-full rounded-xl border border-white/[0.10] bg-[#111722] px-4 py-3.5 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-600 hover:border-white/20 focus:border-emerald-400/70 focus:bg-[#141B27] focus:ring-4 focus:ring-emerald-400/[0.08] [color-scheme:dark] [&:-webkit-autofill]:[-webkit-text-fill-color:#F8FAFC] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#111722_inset]"
+                  className="w-full rounded-xl border border-[#303A47] bg-[#0D131B] px-4 py-3.5 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-600 hover:border-[#465363] focus:border-emerald-600 focus:bg-[#111A22] focus:ring-2 focus:ring-emerald-700/20 [color-scheme:dark] [&:-webkit-autofill]:[-webkit-text-fill-color:#F8FAFC] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#111722_inset]"
                 />
               </label>
 
@@ -266,7 +266,7 @@ export default function Login() {
                       password: event.target.value,
                     })
                   }
-                  className="w-full rounded-xl border border-white/[0.10] bg-[#111722] px-4 py-3.5 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-600 hover:border-white/20 focus:border-emerald-400/70 focus:bg-[#141B27] focus:ring-4 focus:ring-emerald-400/[0.08] [color-scheme:dark] [&:-webkit-autofill]:[-webkit-text-fill-color:#F8FAFC] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#111722_inset]"
+                  className="w-full rounded-xl border border-[#303A47] bg-[#0D131B] px-4 py-3.5 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-600 hover:border-[#465363] focus:border-emerald-600 focus:bg-[#111A22] focus:ring-2 focus:ring-emerald-700/20 [color-scheme:dark] [&:-webkit-autofill]:[-webkit-text-fill-color:#F8FAFC] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#111722_inset]"
                 />
               </label>
 
@@ -282,7 +282,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={busy}
-                className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-emerald-300/20 bg-gradient-to-r from-emerald-400 to-teal-400 px-4 py-4 font-semibold text-[#04110D] shadow-[0_4px_20px_rgba(52,211,153,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-300 hover:to-teal-300 hover:shadow-[0_8px_28px_rgba(52,211,153,0.22)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+                className="group flex w-full items-center justify-center gap-3 rounded-xl border border-emerald-700 bg-[#187653] px-4 py-3.5 font-semibold text-white transition-colors hover:bg-[#1B865F] active:bg-[#146447] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {busy ? 'Logging in…' : 'Log in to FinTrack'}
 
@@ -314,7 +314,7 @@ export default function Login() {
             {/* GOOGLE LOGIN: USE THE RENDER BACKEND */}
             <a
               href={`${API_BASE_URL}/auth/google`}
-              className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/[0.09] bg-white/[0.025] px-4 py-3.5 text-sm font-semibold text-slate-200 shadow-sm transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06] hover:text-white active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50"
+              className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#35404D] bg-[#151C25] px-4 py-3.5 text-sm font-medium text-slate-200 transition-colors hover:border-[#536171] hover:bg-[#1A232E] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700/50"
             >
               <svg
                 className="h-5 w-5"
